@@ -9,10 +9,7 @@
     header { padding: 12px 16px; background: #24292f; color: #fff; display: flex; align-items: center; gap: 10px; }
     header a.back { color: #fff; text-decoration: none; opacity: .85; }
     header .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .wrap { flex: 1; position: relative; }
-    iframe { border: none; width: 100%; height: 100%; }
-    /* strat transparent peste PDF: prinde click-dreapta și blochează interacțiunea de salvare */
-    .shield { position: absolute; inset: 0; }
+    iframe { flex: 1; border: none; width: 100%; }
   </style>
 </head>
 <body>
@@ -20,25 +17,19 @@
     <a class="back" href="index.html">←</a>
     <span class="title" id="title">Document</span>
   </header>
-  <div class="wrap">
-    <iframe id="frame"></iframe>
-    <div class="shield" id="shield"></div>
-  </div>
-    <script>
+  <iframe id="frame"></iframe>
+  <script>
     const p = new URLSearchParams(location.search);
     const f = p.get('f');
     const t = p.get('t') || 'Document';
     document.getElementById('title').textContent = t;
     document.title = t;
-    if (f) {
-      // codăm numele fișierului ca să reziste la puncte/caractere speciale
-      document.getElementById('frame').src = encodeURIComponent(f) + '#toolbar=0';
-    }
+    if (f) document.getElementById('frame').src = f + '#toolbar=0';
+
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && ['s','p'].includes(e.key.toLowerCase())) e.preventDefault();
     });
   </script>
-
 </body>
 </html>
