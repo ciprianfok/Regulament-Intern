@@ -5,19 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Documente utile — SmokeMania</title>
   <style>
-    body { margin: 0; font-family: system-ui, sans-serif; background: #f6f8fa; color: #1f2328; }
-    header { background: #24292f; color: #fff; padding: 24px 20px; }
-    header h1 { margin: 0; font-size: 22px; }
-    header p { margin: 6px 0 0; opacity: .8; font-size: 14px; }
-    main { max-width: 720px; margin: 24px auto; padding: 0 16px; }
-    .doc { display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid #d0d7de;
-           border-radius: 10px; padding: 16px; margin-bottom: 12px; text-decoration: none; color: inherit;
-           transition: box-shadow .15s, transform .15s; }
-    .doc:hover { box-shadow: 0 2px 10px rgba(0,0,0,.08); transform: translateY(-1px); }
-    .ico { font-size: 26px; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: #1f2328;
+      min-height: 100vh;
+      /* Vălul (gradientul întunecat) stă PESTE imagine ca textul să fie lizibil */
+      background:
+        linear-gradient(rgba(15, 20, 30, .78), rgba(15, 20, 30, .78)),
+        url("fundal.png") center / cover fixed no-repeat;
+    }
+    header {
+      color: #fff;
+      padding: 40px 20px 28px;
+      text-align: center;
+      text-shadow: 0 2px 8px rgba(0,0,0,.5);
+    }
+    header h1 { margin: 0; font-size: 30px; letter-spacing: .3px; }
+    header p { margin: 8px 0 0; opacity: .9; font-size: 15px; }
+    main { max-width: 720px; margin: 8px auto 48px; padding: 0 16px; }
+    .doc {
+      display: flex; align-items: center; gap: 14px;
+      background: rgba(255,255,255,.96);
+      border: 1px solid rgba(255,255,255,.5);
+      border-radius: 14px; padding: 18px 20px; margin-bottom: 14px;
+      text-decoration: none; color: inherit;
+      box-shadow: 0 4px 16px rgba(0,0,0,.18);
+      transition: box-shadow .15s, transform .15s;
+    }
+    .doc:hover { box-shadow: 0 8px 26px rgba(0,0,0,.28); transform: translateY(-2px); }
+    .ico { font-size: 28px; }
     .doc b { display: block; font-size: 16px; }
     .doc span { font-size: 13px; color: #656d76; }
-    .arrow { margin-left: auto; color: #656d76; }
+    .arrow { margin-left: auto; color: #656d76; font-size: 20px; }
   </style>
 </head>
 <body>
@@ -32,14 +53,15 @@
       <span><b>Regulament Intern</b><span>PDF · vezi și descarcă</span></span>
       <span class="arrow">›</span>
     </a>
+
     <a class="doc" href="view.html?f=Cerere%20CO%20model%202026.pdf&t=Cerere CO (model 2026)">
       <span class="ico">📄</span>
       <span><b>Cerere CO — model 2026</b><span>PDF · vezi și descarcă</span></span>
       <span class="arrow">›</span>
     </a>
 
-    <!-- Ca să adaugi un document nou: urci PDF-ul, apoi copiezi blocul <a>...</a> de mai sus
-         și schimbi f= (numele fișierului) și t= (titlul afișat). -->
+    <!-- Document nou: urci PDF-ul, copiezi un bloc <a class="doc">...</a> de mai sus
+         și schimbi f= (numele fișierului) și t= (titlul). -->
 
   </main>
 </body>
