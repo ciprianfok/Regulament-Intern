@@ -3,19 +3,39 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Regulament_Intern_FOK-SMK</title>
+  <title>Documente utile — SmokeMania</title>
   <style>
-    body { margin: 0; font-family: system-ui, sans-serif; display: flex; flex-direction: column; height: 100vh; }
-    header { padding: 12px 16px; background: #24292f; color: #fff; display: flex; justify-content: space-between; align-items: center; }
-    header a { color: #fff; background: #2da44e; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; }
-    iframe { flex: 1; border: none; width: 100%; }
+    body { margin: 0; font-family: system-ui, sans-serif; background: #f6f8fa; color: #1f2328; }
+    header { background: #24292f; color: #fff; padding: 24px 20px; }
+    header h1 { margin: 0; font-size: 22px; }
+    header p { margin: 6px 0 0; opacity: .8; font-size: 14px; }
+    main { max-width: 720px; margin: 24px auto; padding: 0 16px; }
+    .doc { display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid #d0d7de;
+           border-radius: 10px; padding: 16px; margin-bottom: 12px; text-decoration: none; color: inherit;
+           transition: box-shadow .15s, transform .15s; }
+    .doc:hover { box-shadow: 0 2px 10px rgba(0,0,0,.08); transform: translateY(-1px); }
+    .ico { font-size: 26px; }
+    .doc b { display: block; font-size: 16px; }
+    .doc span { font-size: 13px; color: #656d76; }
+    .arrow { margin-left: auto; color: #656d76; }
   </style>
 </head>
 <body>
   <header>
-    <span>Regulament_Intern_FOK-SMK</span>
-    <a href="Regulament_Intern_FOK-SMK.pdf" download>⬇ Descarcă</a>
+    <h1>Documente utile</h1>
+    <p>FUMEAZAOK / SMOKEMANIA</p>
   </header>
-  <iframe src="Regulament_Intern_FOK-SMK.pdf"></iframe>
+  <main>
+
+    <a class="doc" href="view.html?f=Regulament_Intern_FOK-SMK.pdf&t=Regulament Intern">
+      <span class="ico">📄</span>
+      <span><b>Regulament Intern</b><span>PDF · vezi și descarcă</span></span>
+      <span class="arrow">›</span>
+    </a>
+
+    <!-- Ca să adaugi un document nou: urci PDF-ul, apoi copiezi blocul <a>...</a> de mai sus
+         și schimbi f= (numele fișierului) și t= (titlul afișat). -->
+
+  </main>
 </body>
 </html>
