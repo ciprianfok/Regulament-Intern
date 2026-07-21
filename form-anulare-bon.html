@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fișă anulare / corecție bon — completează</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #eef1f5; color: #1f2328; }
+    header { background: #24292f; color: #fff; padding: 14px 16px; display: flex; align-items: center; gap: 10px; }
+    header a.back { color: #fff; text-decoration: none; opacity: .85; }
+    header .title { font-weight: 600; }
+    main { max-width: 640px; margin: 24px auto; padding: 0 16px 60px; }
+    .card { background: #fff; border: 1px solid #d0d7de; border-radius: 12px; padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+    h1 { font-size: 20px; margin: 0 0 4px; }
+    .sub { color: #656d76; font-size: 14px; margin: 0 0 18px; }
+    label { display: block; font-size: 14px; font-weight: 600; margin: 14px 0 6px; }
+    input, select, textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid #d0d7de; border-radius: 8px;
+      font-size: 15px; font-family: inherit; background: #fff;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .row { display: flex; gap: 12px; }
+    .row > div { flex: 1; }
+    button {
+      margin-top: 22px; width: 100%; padding: 13px; border: none; border-radius: 8px;
+      background: #2da44e; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer;
+    }
+    button:hover { background: #2c974b; }
+    .hint { font-size: 12px; color: #8a929b; margin-top: 14px; text-align: center; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="back" href="index.html">←</a>
+    <span class="title">Fișă anulare / corecție bon</span>
+  </header>
+  <main>
+    <div class="card">
+      <h1>Fișă anulare / corecție bon</h1>
+      <p class="sub">FUMEAZAOK / SMOKEMANIA — completează câmpurile, apoi apasă „Descarcă PDF".</p>
+
+      <label>Magazinul / punctul de lucru</label>
+      <input id="magazin" type="text" placeholder="ex. SmokeMania Centru">
+
+      <label>Numele operatorului</label>
+      <input id="operator" type="text" placeholder="ex. Popescu Ion">
+
+      <div class="row">
+        <div>
+          <label>Data</label>
+          <input id="data" type="date">
+        </div>
+        <div>
+          <label>Numărul bonului</label>
+          <input id="nrbon" type="text" placeholder="ex. 1234">
+        </div>
+      </div>
+
+      <label>Suma bonului (lei)</label>
+      <input id="suma" type="text" placeholder="ex. 149,90">
+
+      <label>Motivul anulării / corecției</label>
+      <textarea id="motiv" placeholder="Descrie pe scurt motivul..."></textarea>
+
+      <button id="gen">⬇ Descarcă PDF</button>
+      <p class="hint">Documentul se generează în calculatorul tău. Fișierul model nu se modifică.</p>
+    </div>
+  </main>
+
+  <script src="jspdf.umd.min.js"></script>
+  <script>
+    function noDia(s){
+      return (s||'')
+        .replace(/[ăâà]/g,'a').replace(/[ĂÂÀ]/g,'A')
+        .replace(/[îì]/g,'i').replace(/[ÎÌ]/g,'I')
+        .replace(/[șş]/g,'s').replace(/[ȘŞ]/g,'S')
+        .replace(/[țţ]/g,'t').replace(/[ȚŢ]/g,'T')
+        .replace(/[éè]/g,'e').replace(/[ÉÈ]/g,'E');
+    }
+    function val(id){ return noDia((document.getElementById(id).value || '').trim()); }
+    function dRO(v){ if(!v) return '__________'; const p=v.split('-'); return p.length===3 ? p[2]+'.'+p[1]+'.'+p[0] : v; }
+
+    document.getElementById('gen').addEventListener('click', function(){
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const L = 20; let y = 24;
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(13);
+      doc.text('FUMEAZAOK / SMOKEMANIA', 105, y, { align: 'center' }); y += 8;
+      doc.setFontSize(16);
+      doc.text('FISA ANULARE / CORECTIE BON', 105, y, { align: 'center' }); y += 14;
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(12);
+      const line = (label, value) => { doc.text(label + '  ' + value, L, y); y += 10; };
+
+      line('Magazinul / punctul de lucru:', val('magazin') || '____________________');
+      line('Operator:', val('operator') || '__________________________');
+      line('Data:', dRO(val('data')));
+      line('Numarul bonului:', val('nrbon') || '____________');
+      line('Suma bonului:', (val('suma') || '________') + ' lei');
+      y += 4;
+      doc.text('Motivul anularii / corectiei:', L, y); y += 8;
+
+      const motiv = val('motiv') || '';
+      const linii = doc.splitTextToSize(motiv || '_______________________________________________', 170);
+      doc.text(linii, L, y); y += linii.length * 7 + 20;
+
+      doc.text('Semnatura operator,', L, y);
+      doc.text('Aprobat,', 130, y); y += 20;
+      doc.text('_______________________', L, y);
+      doc.text('_______________________', 120, y);
+
+      const nr = (val('nrbon') || 'bon');
+      doc.save('Anulare_bon_' + nr + '.pdf');
+    });
+  </script>
+</body>
+</html>
