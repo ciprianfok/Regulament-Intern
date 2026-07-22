@@ -155,10 +155,17 @@
     function calcZile(){
       const d1 = raw('dela'), d2 = raw('panala');
       if (!d1 || !d2 || zileEditatManual) return;
-      const a = new Date(d1), b = new Date(d2);
-      const diff = Math.round((b - a) / 86400000) + 1;
-      if (diff > 0) document.getElementById('zile').value = diff;
+      const a = new Date(d1 + 'T00:00:00'), b = new Date(d2 + 'T00:00:00');
+      if (b < a) return;
+      // numără zilele lucrătoare (luni–vineri), inclusiv ambele capete; sare sâmbăta (6) și duminica (0)
+      let lucratoare = 0;
+      for (let d = new Date(a); d <= b; d.setDate(d.getDate() + 1)) {
+        const zi = d.getDay();
+        if (zi !== 0 && zi !== 6) lucratoare++;
+      }
+      if (lucratoare > 0) document.getElementById('zile').value = lucratoare;
     }
+
     document.getElementById('dela').addEventListener('change', calcZile);
     document.getElementById('panala').addEventListener('change', calcZile);
 
