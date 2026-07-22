@@ -24,3 +24,109 @@
     header h1 { margin: 0; font-size: 30px; letter-spacing: .3px; }
     header p { margin: 8px 0 0; opacity: .9; font-size: 15px; }
     main { max-width: 720px; margin: 8px auto 48px; padding: 0 16px; }
+
+    .doc {
+      display: flex; align-items: center; gap: 14px;
+      background: rgba(255,255,255,.96);
+      border: 1px solid rgba(255,255,255,.5);
+      border-radius: 14px; padding: 18px 20px; margin-bottom: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.18);
+      transition: box-shadow .15s, transform .15s;
+    }
+    .doc:hover { box-shadow: 0 8px 26px rgba(0,0,0,.28); transform: translateY(-2px); }
+    .ico { font-size: 28px; flex-shrink: 0; }
+    .doc .body { flex: 1; min-width: 0; }
+    .doc b { display: block; font-size: 16px; }
+    .doc .meta { font-size: 13px; color: #656d76; }
+
+    a.doc { text-decoration: none; color: inherit; }
+    a.doc .arrow { margin-left: auto; color: #656d76; font-size: 20px; flex-shrink: 0; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .actions a {
+      display: inline-flex; align-items: center; gap: 6px;
+      text-decoration: none; font-size: 13px; font-weight: 600;
+      padding: 6px 12px; border-radius: 8px;
+    }
+    .act-view { color: #24292f; background: #eef1f5; border: 1px solid #d0d7de; }
+    .act-view:hover { background: #e2e6eb; }
+    .act-fill { color: #fff; background: #2da44e; }
+    .act-fill:hover { background: #2c974b; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Documente utile</h1>
+    <p>FUMEAZAOK / SMOKEMANIA</p>
+  </header>
+  <main>
+
+    <a class="doc" href="view.html?f=Regulament_Intern_FOK-SMK.pdf&t=Regulament Intern">
+      <span class="ico">📄</span>
+      <span class="body"><b>Regulament Intern</b><span class="meta">PDF · vezi și descarcă</span></span>
+      <span class="arrow">›</span>
+    </a>
+
+    <a class="doc" href="view.html?f=Declaratie_luare_la_cunostinta_Regulament_Intern.pdf&t=Declarație luare la cunoștință Regulament Intern">
+      <span class="ico">📄</span>
+      <span class="body"><b>Declarație luare la cunoștință</b><span class="meta">PDF · vezi și descarcă</span></span>
+      <span class="arrow">›</span>
+    </a>
+
+    <a class="doc" href="view.html?f=Fisa_post_Lucrator_comercial_2026.pdf&t=Fișă post Lucrător comercial 2026">
+      <span class="ico">📄</span>
+      <span class="body"><b>Fișă post — Lucrător comercial 2026</b><span class="meta">PDF · vezi și descarcă</span></span>
+      <span class="arrow">›</span>
+    </a>
+
+    <a class="doc" href="view.html?f=Fisa_Pontaj_2026.pdf&t=Fișă pontaj 2026">
+      <span class="ico">📄</span>
+      <span class="body"><b>Fișă pontaj 2026</b><span class="meta">PDF · vezi și descarcă</span></span>
+      <span class="arrow">›</span>
+    </a>
+
+    <div class="doc">
+      <span class="ico">📄</span>
+      <span class="body">
+        <b>Cerere CO — model 2026</b>
+        <span class="meta">Model PDF sau completare online</span>
+        <span class="actions">
+          <a class="act-view" href="view.html?f=Cerere_CO_model_2026.pdf&t=Cerere CO (model 2026)">📄 Vezi PDF</a>
+          <a class="act-fill" href="form-cerere-co.html">✏️ Completează online</a>
+        </span>
+      </span>
+    </div>
+
+    <div class="doc">
+      <span class="ico">📄</span>
+      <span class="body">
+        <b>Fișă anulare / corecție bon</b>
+        <span class="meta">Model PDF sau completare online</span>
+        <span class="actions">
+          <a class="act-view" href="view.html?f=fisa_anulare-corectie_bon.pdf&t=Fișă anulare / corecție bon">📄 Vezi PDF</a>
+          <a class="act-fill" href="form-anulare-bon.html">✏️ Completează online</a>
+        </span>
+      </span>
+    </div>
+
+    <a class="doc" href="view.html?f=Garantie_2026_SMK.pdf&t=Garanție 2026">
+      <span class="ico">📄</span>
+      <span class="body"><b>Garanție 2026</b><span class="meta">PDF · vezi și descarcă</span></span>
+      <span class="arrow">›</span>
+    </a>
+
+    <a class="doc" href="view.html?f=Inventariere_sumara_pe_categorii.pdf&t=Inventariere sumară pe categorii">
+      <span class="ico">📄</span>
+      <span class="body"><b>Inventariere sumară pe categorii</b><span class="meta">PDF · vezi și descarcă</span></span>
+      <span class="arrow">›</span>
+    </a>
+
+    <a class="doc" href="view-nodl.html?f=Manualul_Consultantului_v2.8_COMPLET.pdf&t=Manualul Consultantului v2.8">
+      <span class="ico">🔒</span>
+      <span class="body"><b>Manualul Consultantului v2.8</b><span class="meta">PDF · doar vizualizare</span></span>
+      <span class="arrow">›</span>
+    </a>
+
+  </main>
+</body>
+</html>
