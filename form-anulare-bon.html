@@ -120,6 +120,14 @@
     }
     function raw(id){ return (document.getElementById(id).value || '').trim(); }
     function dRO(v){ if(!v) return '__________'; const p=v.split('-'); return p.length===3 ? p[2]+'.'+p[1]+'.'+p[0] : v; }
+    function sigJpeg(cv){
+      const tmp = document.createElement('canvas');
+      tmp.width = cv.width; tmp.height = cv.height;
+      const c = tmp.getContext('2d');
+      c.fillStyle = '#fff'; c.fillRect(0,0,tmp.width,tmp.height);
+      c.drawImage(cv, 0, 0);
+      return tmp.toDataURL('image/jpeg', 0.6);
+    }
 
     function selVal(selId){
       const s = document.getElementById(selId);
@@ -146,7 +154,7 @@
     const ctx = canvas.getContext('2d');
     let drawing = false, hasSig = false;
     function resizeCanvas(){
-      const ratio = window.devicePixelRatio || 1;
+      const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = canvas.offsetWidth * ratio;
       canvas.height = canvas.offsetHeight * ratio;
       ctx.scale(ratio, ratio);
@@ -210,7 +218,7 @@
 
       doc.text('Semnatura operator,', L, y);
       doc.text('Aprobat,', 130, y); y += 4;
-      doc.addImage(canvas.toDataURL('image/png'), 'PNG', L, y, 50, 20);
+      doc.addImage(sigJpeg(canvas), 'JPEG', L, y, 50, 20);
       y += 24;
       doc.text('_______________________', L, y);
       doc.text('_______________________', 120, y); y += 18;
