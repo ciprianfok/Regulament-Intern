@@ -28,6 +28,11 @@
     }
     button:hover { background: #2c974b; }
     .hint { font-size: 12px; color: #8a929b; margin-top: 14px; text-align: center; }
+    .sigwrap { border: 1px dashed #b0b8c0; border-radius: 8px; background: #fff; margin-top: 6px; }
+    #sig { display: block; width: 100%; height: 160px; touch-action: none; border-radius: 8px; }
+    .sigclear { margin-top: 8px; background: #eef1f5; color: #24292f; border: 1px solid #d0d7de;
+      border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer; width: auto; }
+    .sigclear:hover { background: #e2e6eb; }
   </style>
 </head>
 <body>
@@ -42,6 +47,12 @@
 
       <label>Nume și prenume</label>
       <input id="nume" type="text" placeholder="ex. Popescu Ion">
+
+      <label>Angajat al</label>
+      <select id="firma">
+        <option>Premium Vaping</option>
+        <option>Smoke Mania Online</option>
+      </select>
 
       <label>Funcția</label>
       <input id="functia" type="text" placeholder="ex. Lucrător comercial">
@@ -78,6 +89,10 @@
         </div>
       </div>
 
+      <label>Semnătura</label>
+      <div class="sigwrap"><canvas id="sig"></canvas></div>
+      <button type="button" class="sigclear" id="sigclear">Șterge semnătura</button>
+
       <button id="gen">⬇ Descarcă PDF</button>
       <p class="hint">Documentul se generează în calculatorul tău. Fișierul model nu se modifică.</p>
     </div>
@@ -96,6 +111,33 @@
     function val(id){ return noDia((document.getElementById(id).value || '').trim()); }
     function dRO(v){ if(!v) return '__________'; const p=v.split('-'); return p.length===3 ? p[2]+'.'+p[1]+'.'+p[0] : v; }
 
+    const canvas = document.getElementById('sig');
+    const ctx = canvas.getContext('2d');
+    let drawing = false, hasSig = false;
+    function resizeCanvas(){
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = canvas.offsetWidth * ratio;
+      canvas.height = canvas.offsetHeight * ratio;
+      ctx.scale(ratio, ratio);
+      ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#111';
+    }
+    setTimeout(resizeCanvas, 50);
+    function pos(e){
+      const r = canvas.getBoundingClientRect();
+      const t = e.touches ? e.touches[0] : e;
+      return { x: t.clientX - r.left, y: t.clientY - r.top };
+    }
+    function start(e){ drawing = true; hasSig = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+    function move(e){ if(!drawing) return; const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); }
+    function end(){ drawing = false; }
+    canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start); canvas.addEventListener('touchmove', move);
+    canvas.addEventListener('touchend', end);
+    document.getElementById('sigclear').addEventListener('click', function(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig = false;
+    });
+
     document.getElementById('gen').addEventListener('click', function(){
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ unit: 'mm', format: 'a4' });
@@ -110,6 +152,7 @@
       const line = (label, value) => { doc.text(label + '  ' + value, L, y); y += 10; };
 
       line('Subsemnatul(a):', val('nume') || '__________________________');
+      line('Angajat al:', val('firma'));
       line('Functia:', val('functia') || '__________________________');
       line('Magazinul / punctul de lucru:', val('magazin') || '____________________');
       y += 2;
@@ -117,10 +160,14 @@
       doc.text('pentru perioada  ' + dRO(val('dela')) + '  -  ' + dRO(val('panala'))
                + '   (' + (val('zile')||'__') + ' zile).', L, y); y += 16;
 
-      doc.text('Data cererii: ' + dRO(val('datacerere')), L, y); y += 24;
+      doc.text('Data cererii: ' + dRO(val('datacerere')), L, y); y += 22;
 
       doc.text('Semnatura solicitant,', L, y);
-      doc.text('Aprobat,', 130, y); y += 20;
+      doc.text('Aprobat,', 130, y); y += 4;
+      if (hasSig) {
+        doc.addImage(canvas.toDataURL('image/png'), 'PNG', L, y, 50, 20);
+      }
+      y += 22;
       doc.text('_______________________', L, y);
       doc.text('_______________________', 120, y);
 
