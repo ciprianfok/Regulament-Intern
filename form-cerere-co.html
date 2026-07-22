@@ -12,6 +12,7 @@
     header .title { font-weight: 600; }
     main { max-width: 640px; margin: 24px auto; padding: 0 16px 60px; }
     .card { background: #fff; border: 1px solid #d0d7de; border-radius: 12px; padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+    .brand { font-size: 12px; font-weight: 700; letter-spacing: .5px; color: #656d76; text-align: left; margin: 0 0 4px; }
     h1 { font-size: 20px; margin: 0 0 4px; }
     .sub { color: #656d76; font-size: 14px; margin: 0 0 18px; }
     label { display: block; font-size: 14px; font-weight: 600; margin: 14px 0 6px; }
@@ -19,15 +20,18 @@
       width: 100%; padding: 10px 12px; border: 1px solid #d0d7de; border-radius: 8px;
       font-size: 15px; font-family: inherit; background: #fff;
     }
+    input.invalid, select.invalid, .sigwrap.invalid { border-color: #cf222e; background: #fff6f6; }
     textarea { min-height: 80px; resize: vertical; }
     .row { display: flex; gap: 12px; }
     .row > div { flex: 1; }
+    .hidden { display: none; }
     button {
       margin-top: 22px; width: 100%; padding: 13px; border: none; border-radius: 8px;
       background: #2da44e; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer;
     }
     button:hover { background: #2c974b; }
     .hint { font-size: 12px; color: #8a929b; margin-top: 14px; text-align: center; }
+    .err { color: #cf222e; font-size: 13px; font-weight: 600; margin-top: 12px; text-align: center; display: none; }
     .sigwrap { border: 1px dashed #b0b8c0; border-radius: 8px; background: #fff; margin-top: 6px; }
     #sig { display: block; width: 100%; height: 160px; touch-action: none; border-radius: 8px; }
     .sigclear { margin-top: 8px; background: #eef1f5; color: #24292f; border: 1px solid #d0d7de;
@@ -42,30 +46,41 @@
   </header>
   <main>
     <div class="card">
+      <p class="brand">FUMEAZAOK / SMOKEMANIA</p>
       <h1>Cerere de concediu</h1>
-      <p class="sub">FUMEAZAOK / SMOKEMANIA — completează câmpurile, apoi apasă „Descarcă PDF".</p>
+      <p class="sub">Completează toate câmpurile și semnează, apoi apasă „Descarcă PDF".</p>
 
       <label>Nume și prenume</label>
       <input id="nume" type="text" placeholder="ex. Popescu Ion">
 
       <label>Angajat al</label>
       <select id="firma">
+        <option value="" disabled selected>ex. Premium Vaping</option>
         <option>Premium Vaping</option>
         <option>Smoke Mania Online</option>
+        <option value="__alt__">Altul...</option>
       </select>
+      <input id="firma_alt" class="hidden" type="text" placeholder="Scrie firma" style="margin-top:8px">
 
       <label>Funcția</label>
-      <input id="functia" type="text" placeholder="ex. Lucrător comercial">
+      <select id="functia">
+        <option value="" disabled selected>ex. Lucrător comercial</option>
+        <option>Lucrător comercial</option>
+        <option>Manager</option>
+        <option value="__alt__">Altul...</option>
+      </select>
+      <input id="functia_alt" class="hidden" type="text" placeholder="Scrie funcția" style="margin-top:8px">
 
       <label>Magazinul / punctul de lucru</label>
       <input id="magazin" type="text" placeholder="ex. SmokeMania Centru">
 
       <label>Tipul concediului</label>
       <select id="tip">
-        <option>Odihnă</option>
-        <option>Medical</option>
+        <option selected>Odihnă</option>
         <option>Fără plată</option>
+        <option value="__alt__">Altele...</option>
       </select>
+      <input id="tip_alt" class="hidden" type="text" placeholder="Scrie tipul concediului" style="margin-top:8px">
 
       <div class="row">
         <div>
@@ -90,10 +105,11 @@
       </div>
 
       <label>Semnătura</label>
-      <div class="sigwrap"><canvas id="sig"></canvas></div>
+      <div class="sigwrap" id="sigwrap"><canvas id="sig"></canvas></div>
       <button type="button" class="sigclear" id="sigclear">Șterge semnătura</button>
 
       <button id="gen">⬇ Descarcă PDF</button>
+      <p class="err" id="err">Completează toate câmpurile și semnează înainte de descărcare.</p>
       <p class="hint">Documentul se generează în calculatorul tău. Fișierul model nu se modifică.</p>
     </div>
   </main>
@@ -108,8 +124,41 @@
         .replace(/[țţ]/g,'t').replace(/[ȚŢ]/g,'T')
         .replace(/[éè]/g,'e').replace(/[ÉÈ]/g,'E');
     }
-    function val(id){ return noDia((document.getElementById(id).value || '').trim()); }
+    function raw(id){ return (document.getElementById(id).value || '').trim(); }
     function dRO(v){ if(!v) return '__________'; const p=v.split('-'); return p.length===3 ? p[2]+'.'+p[1]+'.'+p[0] : v; }
+
+    function selVal(selId){
+      const s = document.getElementById(selId);
+      if (s.value === '__alt__') return raw(selId + '_alt');
+      return raw(selId);
+    }
+
+    ['firma','functia','tip'].forEach(function(id){
+      const s = document.getElementById(id);
+      const alt = document.getElementById(id + '_alt');
+      s.addEventListener('change', function(){
+        if (s.value === '__alt__') { alt.classList.remove('hidden'); alt.focus(); }
+        else { alt.classList.add('hidden'); alt.value = ''; }
+      });
+    });
+
+    (function(){
+      const d = new Date();
+      const iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+      document.getElementById('datacerere').value = iso;
+    })();
+
+    let zileEditatManual = false;
+    document.getElementById('zile').addEventListener('input', function(){ zileEditatManual = true; });
+    function calcZile(){
+      const d1 = raw('dela'), d2 = raw('panala');
+      if (!d1 || !d2 || zileEditatManual) return;
+      const a = new Date(d1), b = new Date(d2);
+      const diff = Math.round((b - a) / 86400000) + 1;
+      if (diff > 0) document.getElementById('zile').value = diff;
+    }
+    document.getElementById('dela').addEventListener('change', calcZile);
+    document.getElementById('panala').addEventListener('change', calcZile);
 
     const canvas = document.getElementById('sig');
     const ctx = canvas.getContext('2d');
@@ -127,7 +176,7 @@
       const t = e.touches ? e.touches[0] : e;
       return { x: t.clientX - r.left, y: t.clientY - r.top };
     }
-    function start(e){ drawing = true; hasSig = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+    function start(e){ drawing = true; hasSig = true; document.getElementById('sigwrap').classList.remove('invalid'); const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
     function move(e){ if(!drawing) return; const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); }
     function end(){ drawing = false; }
     canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move);
@@ -139,6 +188,19 @@
     });
 
     document.getElementById('gen').addEventListener('click', function(){
+      const campuri = ['nume','firma','functia','magazin','tip','dela','panala','zile','datacerere'];
+      let ok = true;
+      document.getElementById('err').style.display = 'none';
+      campuri.forEach(function(id){
+        const el = document.getElementById(id);
+        el.classList.remove('invalid');
+        let gol = raw(id) === '';
+        if (el.value === '__alt__') { gol = raw(id + '_alt') === ''; if (gol) document.getElementById(id+'_alt').classList.add('invalid'); }
+        if (gol) { el.classList.add('invalid'); ok = false; }
+      });
+      if (!hasSig) { document.getElementById('sigwrap').classList.add('invalid'); ok = false; }
+      if (!ok) { document.getElementById('err').style.display = 'block'; return; }
+
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ unit: 'mm', format: 'a4' });
       const L = 20; let y = 24;
@@ -151,27 +213,25 @@
       doc.setFont('helvetica','normal'); doc.setFontSize(12);
       const line = (label, value) => { doc.text(label + '  ' + value, L, y); y += 10; };
 
-      line('Subsemnatul(a):', val('nume') || '__________________________');
-      line('Angajat al:', val('firma'));
-      line('Functia:', val('functia') || '__________________________');
-      line('Magazinul / punctul de lucru:', val('magazin') || '____________________');
+      line('Subsemnatul(a):', noDia(raw('nume')));
+      line('Angajat al:', noDia(selVal('firma')));
+      line('Functia:', noDia(selVal('functia')));
+      line('Magazinul / punctul de lucru:', noDia(raw('magazin')));
       y += 2;
-      doc.text('Va rog sa imi aprobati concediul de tip "' + val('tip') + '"', L, y); y += 10;
-      doc.text('pentru perioada  ' + dRO(val('dela')) + '  -  ' + dRO(val('panala'))
-               + '   (' + (val('zile')||'__') + ' zile).', L, y); y += 16;
+      doc.text('Va rog sa imi aprobati concediul de tip "' + noDia(selVal('tip')) + '"', L, y); y += 10;
+      doc.text('pentru perioada  ' + dRO(raw('dela')) + '  -  ' + dRO(raw('panala'))
+               + '   (' + raw('zile') + ' zile).', L, y); y += 16;
 
-      doc.text('Data cererii: ' + dRO(val('datacerere')), L, y); y += 22;
+      doc.text('Data cererii: ' + dRO(raw('datacerere')), L, y); y += 22;
 
       doc.text('Semnatura solicitant,', L, y);
       doc.text('Aprobat,', 130, y); y += 4;
-      if (hasSig) {
-        doc.addImage(canvas.toDataURL('image/png'), 'PNG', L, y, 50, 20);
-      }
+      doc.addImage(canvas.toDataURL('image/png'), 'PNG', L, y, 50, 20);
       y += 22;
       doc.text('_______________________', L, y);
       doc.text('_______________________', 120, y);
 
-      const nume = (val('nume') || 'cerere').replace(/\s+/g,'_');
+      const nume = (noDia(raw('nume')) || 'cerere').replace(/\s+/g,'_');
       doc.save('Cerere_CO_' + nume + '.pdf');
     });
   </script>
