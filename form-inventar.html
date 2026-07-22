@@ -204,20 +204,32 @@
       div.innerHTML =
         '<button type="button" class="rmv" title="Șterge">×</button>'+
         '<label>Nume și prenume</label><input class="pnume" type="text" placeholder="ex. Popescu Ion">'+
-        '<label>Funcția</label><input class="pfunc" type="text" placeholder="ex. Lucrător comercial">'+
+        '<label>Funcția</label>'+
+        '<select class="pfunc">'+
+          '<option value="" disabled selected>Alege...</option>'+
+          '<option>Lucrător comercial</option>'+
+          '<option>Manager</option>'+
+          '<option value="__alt__">Altul...</option>'+
+        '</select>'+
+        '<input class="pfunc_alt hidden" type="text" placeholder="Scrie funcția" style="margin-top:8px">'+
         '<label>Semnătura</label><div class="sigwrap"><canvas class="sig"></canvas></div>'+
         '<button type="button" class="sigclear">Șterge semnătura</button>';
       persBox.appendChild(div);
       const canvas=div.querySelector('.sig'), wrap=div.querySelector('.sigwrap');
       const sig=setupSig(canvas, wrap);
       div.querySelector('.sigclear').addEventListener('click', sig.clear);
-      const item = { div:div, sig:sig,
-        nume:()=>div.querySelector('.pnume').value.trim(),
-        func:()=>div.querySelector('.pfunc').value.trim() };
+      const fsel=div.querySelector('.pfunc'), falt=div.querySelector('.pfunc_alt');
+      fsel.addEventListener('change', function(){
+        if(fsel.value==='__alt__'){ falt.classList.remove('hidden'); falt.focus(); }
+        else { falt.classList.add('hidden'); falt.value=''; }
+      });
       div.querySelector('.rmv').addEventListener('click', function(){
         div.remove();
         const i = persItems.indexOf(item); if(i>=0) persItems.splice(i,1);
       });
+      const item = { div:div, sig:sig,
+        nume:()=>div.querySelector('.pnume').value.trim(),
+        func:()=> (fsel.value==='__alt__' ? falt.value.trim() : (fsel.value==='' ? '' : fsel.value.trim())) };
       persItems.push(item);
     }
     document.getElementById('addPers').addEventListener('click', addPers);
