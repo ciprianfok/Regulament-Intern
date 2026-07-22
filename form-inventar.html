@@ -126,6 +126,14 @@
     function raw(id){ const el = document.getElementById(id); return el ? (el.value||'').trim() : ''; }
     function dRO(v){ if(!v) return '__________'; const p=v.split('-'); return p.length===3 ? p[2]+'.'+p[1]+'.'+p[0] : v; }
     function selVal(selId){ const s=document.getElementById(selId); return s.value==='__alt__' ? raw(selId+'_alt') : raw(selId); }
+    function sigJpeg(cv){
+      const tmp = document.createElement('canvas');
+      tmp.width = cv.width; tmp.height = cv.height;
+      const c = tmp.getContext('2d');
+      c.fillStyle = '#fff'; c.fillRect(0,0,tmp.width,tmp.height);
+      c.drawImage(cv, 0, 0);
+      return tmp.toDataURL('image/jpeg', 0.6);
+    }
 
     (function(){
       const s=document.getElementById('firma'), alt=document.getElementById('firma_alt');
@@ -182,7 +190,7 @@
       const ctx = canvas.getContext('2d');
       let drawing=false, has=false;
       function resize(){
-        const ratio=window.devicePixelRatio||1;
+        const ratio=Math.min(window.devicePixelRatio||1, 1.5);
         canvas.width=canvas.offsetWidth*ratio; canvas.height=canvas.offsetHeight*ratio;
         ctx.scale(ratio,ratio); ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#111';
       }
@@ -194,7 +202,7 @@
       canvas.addEventListener('touchstart',function(e){ drawing=true;has=true;wrap.classList.remove('invalid');const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);e.preventDefault();});
       canvas.addEventListener('touchmove',function(e){ if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();e.preventDefault();});
       canvas.addEventListener('touchend',function(){ drawing=false;});
-      return { clear:function(){ ctx.clearRect(0,0,canvas.width,canvas.height);has=false;}, has:function(){return has;}, data:function(){return canvas.toDataURL('image/png');} };
+      return { clear:function(){ ctx.clearRect(0,0,canvas.width,canvas.height);has=false;}, has:function(){return has;}, data:function(){return sigJpeg(canvas);} };
     }
     const persItems = [];
     function addPers(){
@@ -320,7 +328,7 @@
         doc.setFontSize(10);
         doc.text(noDia(p.nume()), L, y+6);
         doc.text(noDia(p.func()), L+70, y+6);
-        doc.addImage(p.sig.data(), 'PNG', L+118, y, 40, 14);
+        doc.addImage(p.sig.data(), 'JPEG', L+118, y, 40, 14);
         y+=16; doc.setDrawColor(220); doc.line(L, y, R, y); y+=2;
       });
 
