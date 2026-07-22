@@ -126,6 +126,8 @@
     }
     function raw(id){ return (document.getElementById(id).value || '').trim(); }
     function dRO(v){ if(!v) return '__________'; const p=v.split('-'); return p.length===3 ? p[2]+'.'+p[1]+'.'+p[0] : v; }
+    const LUNI = ['ian','feb','mar','apr','mai','iun','iul','aug','sep','oct','noi','dec'];
+    function ziLuna(v){ if(!v) return ''; const p=v.split('-'); if(p.length!==3) return ''; return p[2] + ' ' + LUNI[parseInt(p[1],10)-1]; }
 
     function selVal(selId){
       const s = document.getElementById(selId);
@@ -205,13 +207,17 @@
       const doc = new jsPDF({ unit: 'mm', format: 'a4' });
       const L = 20; let y = 24;
 
-      doc.setFont('helvetica','bold'); doc.setFontSize(13);
-      doc.text('FUMEAZAOK / SMOKEMANIA', 105, y, { align: 'center' }); y += 8;
+      doc.setFont('helvetica','bold'); doc.setFontSize(10);
+      doc.text('FUMEAZAOK / SMOKEMANIA', L, y); y += 12;
       doc.setFontSize(16);
-      doc.text('CERERE DE CONCEDIU', 105, y, { align: 'center' }); y += 14;
+      doc.text('CERERE DE CONCEDIU', 105, y, { align: 'center' }); y += 16;
 
       doc.setFont('helvetica','normal'); doc.setFontSize(12);
       const line = (label, value) => { doc.text(label + '  ' + value, L, y); y += 10; };
+
+      doc.setFont('helvetica','bold');
+      doc.text('Domnule Director,', L, y); y += 12;
+      doc.setFont('helvetica','normal');
 
       line('Subsemnatul(a):', noDia(raw('nume')));
       line('Angajat al:', noDia(selVal('firma')));
@@ -231,8 +237,9 @@
       doc.text('_______________________', L, y);
       doc.text('_______________________', 120, y);
 
-      const nume = (noDia(raw('nume')) || 'cerere').replace(/\s+/g,'_');
-      doc.save('Cerere_CO_' + nume + '.pdf');
+      const nume = noDia(raw('nume'));
+      const perioada = ziLuna(raw('dela')) + ' - ' + ziLuna(raw('panala'));
+      doc.save('CO ' + nume + ' ' + perioada + '.pdf');
     });
   </script>
 </body>
