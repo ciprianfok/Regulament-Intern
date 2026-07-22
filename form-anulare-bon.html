@@ -219,7 +219,7 @@
       doc.text('Nu uitati sa completati fisa pentru contabilitate si sa atasati bonul fiscal.', L, y); y += 5;
       doc.text('Nu uitati sa trimiteti fisierul PDF pe mail la Ciprian@FumeazaOK.ro', L, y);
 
-      doc.save('Fisa anulare bon MicroPOS.pdf');
+      doc.save('Anulare bon ' + noDia(raw('nrbon')) + '.pdf');
     });
   </script>
 </body>
